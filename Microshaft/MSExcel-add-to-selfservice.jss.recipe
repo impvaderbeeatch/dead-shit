@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+	<key>Comment</key>
+	<string>This recipe was created by Alan McCrossen and modified by Pat Camporeale to suit AMS office needs.</string>
+
+	<key>Description</key>
+	<string>Downloads the latest Excel 2016 multilingual update pkg,
+		and appends the version to the end of the filename.
+
+		LOCALE_ID sets the locale for a descriptive text that will be
+		extracted from the Microsoft update metadata. See
+		https://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
+		for more information about locale IDs.
+
+		VERSION currently only supports 'latest'.
+		Then, uploads to the JSS.</string>
+	<key>Identifier</key>
+	<string>com.github.impvaderbeeatch.jss.add-msexcel2016</string>
+	<key>Input</key>
+	<dict>
+		<key>CATEGORY</key>
+		<string>Applications</string>
+		<key>DESCRIPTION</key>
+		<string>MS Office Excel 2016</string>
+		<key>ICON</key>
+		<string>%RECIPE_DIR%/Excel.png</string>
+		<key>GROUP_NAME</key>
+		<string>SW: MS Excel 2016 Candidate</string>
+		<key>GROUP_TEMPLATE</key>
+    		<string>%RECIPE_DIR%/sgt.self-service.xml</string>
+		<key>NAME</key>
+		<string>Microsoft Excel</string>
+		<key>OS_REQUIREMENTS</key>
+		<string>10.12.x,10.11.x,10.10.x</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Install Apps</string>
+		<key>POLICY_TEMPLATE</key>
+    		<string>%RECIPE_DIR%/pt.add.self.service.xml</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Microsoft Excel is a spreadsheet application that features calculation, graphing tools, pivot tables, and a macro programming language called Visual Basic for Applications.</string>
+	</dict>
+	<key>MinimumVersion</key>
+	<string>0.4.2</string>
+	<key>ParentRecipe</key>
+	<string>com.github.impvaderbeeatch.download.MSExcel2016</string>
+	<key>Process</key>
+	<array>
+		<dict>
+			<key>Arguments</key>
+			<dict>
+				<key>destination_path</key>
+				<string>%RECIPE_CACHE_DIR%/unpacked</string>
+				<key>flat_pkg_path</key>
+				<string>%pathname%</string>
+				<key>purge_destination</key>
+				<true/>
+				<key>skip_payload</key>
+				<true/>
+			</dict>
+			<key>Processor</key>
+			<string>FlatPkgUnpacker</string>
+		</dict>
+		<dict>
+			<key>Arguments</key>
+			<dict>
+				<key>pattern</key>
+				<string>%RECIPE_CACHE_DIR%/unpacked/*.pkg/PackageInfo</string>
+			</dict>
+			<key>Processor</key>
+			<string>FileFinder</string>
+		</dict>
+		<dict>
+			<key>Arguments</key>
+			<dict>
+				<key>packageinfo_path</key>
+				<string>%found_filename%</string>
+			</dict>
+			<key>Processor</key>
+			<string>MSOffice2016VersionChecker</string>
+		</dict>
+		<dict>
+			<key>Arguments</key>
+			<dict>
+				<key>category</key>
+				<string>%CATEGORY%</string>
+				<key>groups</key>
+				<array>
+					<dict>
+						<key>name</key>
+						<string>%GROUP_NAME%</string>
+						<key>smart</key>
+						<true/>
+						<key>template_path</key>
+						<string>%GROUP_TEMPLATE%</string>
+					</dict>
+				</array>
+				<key>os_requirements</key>
+				<string>%OS_REQUIREMENTS%</string>
+				<key>pkg_path</key>
+				<string>%pathname%</string>
+				<key>policy_category</key>
+				<string>%POLICY_CATEGORY%</string>
+				<key>policy_template</key>
+				<string>%POLICY_TEMPLATE%</string>
+				<key>prod_name</key>
+				<string>%NAME%</string>
+				<key>self_service_description</key>
+				<string>%SELF_SERVICE_DESCRIPTION%</string>
+				<key>self_service_icon</key>
+				<string>%ICON%</string>
+			</dict>
+			<key>Processor</key>
+			<string>JSSImporter</string>
+		</dict>
+	</array>
+</dict>
+</plist>
